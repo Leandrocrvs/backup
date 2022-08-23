@@ -1,0 +1,670 @@
+{
+  "id": 10,
+  "name": "Aviso vencimento de INSS",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        -2380,
+        780
+      ],
+      "id": "eb41f383-36c4-4754-97be-814e922d18d9"
+    },
+    {
+      "parameters": {
+        "value": "={{Date()}}",
+        "dataPropertyName": "DATA ENVIADO",
+        "custom": true,
+        "toFormat": "DD/MM/YYYY HH:mm",
+        "options": {
+          "toTimezone": "America/Rio_Branco"
+        }
+      },
+      "name": "Date & Time",
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        580
+      ],
+      "id": "5428835e-64c9-4db7-9394-c983be7186b4",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "sheetId": "1Zqrm7VDBaKUCpKvQ8hsEETJpdcR_UT3-UyE6wfRqq_c",
+        "range": "A:Z",
+        "options": {
+          "valueRenderMode": "FORMATTED_VALUE"
+        }
+      },
+      "name": "Carrega Dados Planilha",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 1,
+      "position": [
+        -2160,
+        600
+      ],
+      "id": "f6b96ce8-f77d-4aff-8e22-574b904906a7",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "13",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "POST",
+        "url": "=http://chat.intactacontabil.com.br:8081/api/principal/send-message",
+        "jsonParameters": true,
+        "options": {
+          "batchInterval": 15000,
+          "batchSize": 1
+        },
+        "bodyParametersJson": "={\"phone\": \"{{$node[\"CLIENTE\"].json[\"TELEFONE COM 55\"]}}\",\"message\": \"*Mensagens automaticas Intacta Contábil* \\n Olá *{{$node[\"CLIENTE\"].json[\"CLIENTE\"]}}* Tudo Bem?\\n ✅ Esse é um Lembrete para avisar do vencimento do INSS dos funcionários,\\n 🕚 Vencimento do INSS é todo dia 20 de cada mês,\\n ❌ (Exceto quando o vencimento é no final de semana ou feriado o prazo de pagamento é adiantado para o primeiro dia útil), \\nSe caso não possui funcionários desconsiderar essa menssagem. \\nDuvidas ❓ Retornar no email contato@intactacontabil.com.br ou nesse Contato\",\"isGroup\": false}"
+      },
+      "name": "ENVIA MENSAGEM POS VENDAS",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -1560,
+        580
+      ],
+      "id": "2d66f82e-1566-4c7f-af4f-e7b39eb7729d",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "14",
+          "name": "Header Auth account 2"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "ENVIADO",
+              "value": "SIM"
+            },
+            {
+              "name": "DATA ENVIADO",
+              "value": "={{$node[\"Date & Time\"].json[\"DATA ENVIADO\"]}}"
+            }
+          ],
+          "number": [
+            {
+              "name": "CONTATO",
+              "value": "={{$node[\"CLIENTE\"].json[\"CONTATO\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Setar Enviado Pos Vendas",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -840,
+        580
+      ],
+      "id": "b34d7e22-fe8c-4b44-aa32-87df56162395",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "value": "={{Date()}}",
+        "dataPropertyName": "DATA ENVIADO",
+        "custom": true,
+        "toFormat": "DD/MM/YYYY HH:mm",
+        "options": {
+          "toTimezone": "America/Porto_Acre"
+        }
+      },
+      "name": "Date & Time1",
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        780
+      ],
+      "id": "94b5294e-66e8-49bc-ad74-5a9f6beec833",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "update",
+        "sheetId": "1Zqrm7VDBaKUCpKvQ8hsEETJpdcR_UT3-UyE6wfRqq_c",
+        "range": "A:Z",
+        "key": "CONTATO",
+        "options": {
+          "valueRenderMode": "FORMATTED_VALUE"
+        }
+      },
+      "name": "Update ENVIADO SIM1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        780
+      ],
+      "id": "5e6a5117-cefb-4897-9264-ef195652bfae",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "3",
+          "name": "Google Sheets account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "ENVIADO",
+              "value": "SIM"
+            },
+            {
+              "name": "DATA ENVIADO",
+              "value": "={{$node[\"Date & Time1\"].json[\"DATA ENVIADO\"]}}"
+            }
+          ],
+          "number": [
+            {
+              "name": "CONTATO",
+              "value": "={{$node[\"NÃO CLIENTE\"].json[\"CONTATO\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Setar Enviado Vendas",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -840,
+        780
+      ],
+      "id": "72b5123e-a172-4c2c-a55a-8624333b26df",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "upsert",
+        "sheetId": "1Zqrm7VDBaKUCpKvQ8hsEETJpdcR_UT3-UyE6wfRqq_c",
+        "range": "A:Z",
+        "key": "CONTATO",
+        "options": {
+          "valueRenderMode": "FORMATTED_VALUE"
+        }
+      },
+      "name": "Update ENVIADO SIM",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        580
+      ],
+      "id": "c13a8508-22ce-40a6-9e27-183bad4f9f11",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "13",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{$node[\"Verifica SE tem INSS\"].json[\"TIPO DE PESQUISA\"]}}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "CLIENTE"
+            },
+            {
+              "value2": "NAO CLIENTE",
+              "output": 1
+            }
+          ]
+        }
+      },
+      "name": "SEPARA COMPROU",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        -1420,
+        1040
+      ],
+      "id": "47eaf54d-6dd7-4334-b3d2-572ef85f6cb8",
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "name": "NoOp",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -1720,
+        840
+      ],
+      "id": "689c24d7-8995-4f85-b710-7238556459f7"
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "=http://185.241.151.176:9001/zdg-message",
+        "options": {
+          "batchInterval": 15000,
+          "batchSize": 10
+        },
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "={{$node[\"CLIENTE\"].parameter[\"values\"][\"string\"][0][\"name\"]}}",
+              "value": "={{$node[\"NÃO CLIENTE\"].json[\"TELEFONE\"]}}"
+            },
+            {
+              "name": "={{$node[\"CLIENTE\"].parameter[\"values\"][\"string\"][1][\"name\"]}}",
+              "value": "=Olá *{{$node[\"NÃO CLIENTE\"].json[\"CLIENTE\"]}}* como vai você?"
+            }
+          ]
+        }
+      },
+      "name": "ENVIA MENSAGEM POS VENDAS1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -1220,
+        780
+      ],
+      "id": "21903e69-fab2-4a76-af04-41fba4e83f11",
+      "disabled": true,
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "=http://185.241.151.176:9001/send-message",
+        "options": {
+          "batchInterval": 15000,
+          "batchSize": 1
+        },
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "={{$node[\"CLIENTE\"].parameter[\"values\"][\"string\"][0][\"name\"]}}",
+              "value": "={{$node[\"NÃO CLIENTE\"].json[\"TELEFONE\"]}}"
+            },
+            {
+              "name": "={{$node[\"CLIENTE\"].parameter[\"values\"][\"string\"][1][\"name\"]}}",
+              "value": "=Olá *{{$node[\"NÃO CLIENTE\"].json[\"CLIENTE\"]}}* como vai você?"
+            }
+          ]
+        }
+      },
+      "name": "ENVIA MENSAGEM POS VENDAS2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -1240,
+        1040
+      ],
+      "id": "9bc28fb6-3f90-4959-9cef-47cd6dbb7726",
+      "disabled": true,
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "jid",
+              "value": "={{$node[\"Verifica SE tem INSS\"].json[\"TELEFONE COM 55\"]}}"
+            },
+            {
+              "name": "Cliente",
+              "value": "={{$node[\"Verifica SE tem INSS\"].json[\"EMPRESA\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "CLIENTE",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -1760,
+        580
+      ],
+      "id": "d8fcecbe-b840-4f52-b0b4-21e1ac309cf4"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "jid",
+              "value": "={{$node[\"SEPARA COMPROU\"].json[\"TELEFONE\"]}}"
+            },
+            {
+              "name": "message",
+              "value": "Teste de envio de mensagem N8N com parametros"
+            }
+          ]
+        },
+        "options": {
+          "dotNotation": "={{$node[\"SEPARA POS VENDAS VENDAS1\"].json[\"CONTATO\"]}}"
+        }
+      },
+      "name": "NÃO CLIENTE",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -1420,
+        780
+      ],
+      "id": "f5c968e5-595a-47d1-a29f-7bba30089959",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "POST",
+        "url": "=http://chat.intactacontabil.com.br:8081/api/principal/send-message",
+        "jsonParameters": true,
+        "options": {
+          "batchInterval": 25000,
+          "batchSize": 1
+        },
+        "bodyParametersJson": "={\"phone\": \"{{$node[\"CLIENTE\"].json[\"TELEFONE COM 55\"]}}\",\"message\":\"*{{$node[\"CLIENTE\"].json[\"CLIENTE\"]}}* aproveite para nos seguir em nossas redes sociais e visite nosso blog de notícias. \\n *Blog* \\n https://intactacontabil.com.br/blog/ \\n *Facebook* \\n web.facebook.com/contabilintacta \\n *Instagram* \\n www.instagram.com/intactacontabil \\n _______________________________ \\n *2021 - www.intactacontabil.com.br* \\n ® Todos os direitos reservados. \\n\",\"isGroup\": false}"
+      },
+      "name": "ENVIA MENSAGEM POS VENDAS3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -1200,
+        580
+      ],
+      "id": "fd6806ae-eaab-4d76-8ddb-34c471ae8652",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "14",
+          "name": "Header Auth account 2"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "fromEmail": "contato@intactacontabil.com.br",
+        "toEmail": "={{$node[\"CLIENTE\"].json[\"Email\"]}}",
+        "ccEmail": "={{$node[\"CLIENTE\"].json[\"Email Financeiro\"]}}",
+        "subject": "Lembrete de vencimento do FGTS",
+        "text": "=Olá {{$node[\"CLIENTE\"].json[\"CLIENTE\"]}} Tudo Bem?\n\nEsse é um Lembrete para avisar do vencimento do INSS dos funcionários.\nVencimento do INSS é todo dia 20 de cada mês. (Exceto quando o vencimento é no final de semana ou feriado o prazo de pagamento é adiantado para o primeiro dia útil)\n\nSe caso não possui funcionários desconsiderar essa menssagem.\n\nDuvidas ❓\nRetornar no email contato@intactacontabil.com.br ou\n\nWhataspp 62981679955",
+        "options": {}
+      },
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        -1380,
+        580
+      ],
+      "id": "cc30f18a-d8be-40e6-9b96-426abeef7c04",
+      "credentials": {
+        "smtp": {
+          "id": "15",
+          "name": "SMTP account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyMonth",
+              "hour": 17,
+              "minute": 24,
+              "dayOfMonth": 23
+            }
+          ]
+        }
+      },
+      "name": "Lembrete INSS Mensal",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        -2380,
+        600
+      ],
+      "id": "a78bbc88-e071-4acd-a8a1-21b2b333b713"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$node[\"Carrega Dados Planilha\"].json[\"INSS\"]}}",
+              "value2": "SIM"
+            }
+          ]
+        }
+      },
+      "name": "Verifica SE tem INSS",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1960,
+        600
+      ],
+      "id": "b3966fb6-04f7-446b-ad52-206b06310633"
+    },
+    {
+      "parameters": {},
+      "name": "NoOp1",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        580
+      ],
+      "id": "b09cb327-94b8-4395-b1c5-c173fef02931"
+    }
+  ],
+  "connections": {
+    "Date & Time": {
+      "main": [
+        [
+          {
+            "node": "Setar Enviado Pos Vendas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Carrega Dados Planilha": {
+      "main": [
+        [
+          {
+            "node": "Verifica SE tem INSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ENVIA MENSAGEM POS VENDAS": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setar Enviado Pos Vendas": {
+      "main": [
+        [
+          {
+            "node": "Update ENVIADO SIM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setar Enviado Vendas": {
+      "main": [
+        [
+          {
+            "node": "Update ENVIADO SIM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time1": {
+      "main": [
+        [
+          {
+            "node": "Setar Enviado Vendas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ENVIA MENSAGEM POS VENDAS1": {
+      "main": [
+        [
+          {
+            "node": "Date & Time1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CLIENTE": {
+      "main": [
+        [
+          {
+            "node": "ENVIA MENSAGEM POS VENDAS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NÃO CLIENTE": {
+      "main": [
+        [
+          {
+            "node": "ENVIA MENSAGEM POS VENDAS1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Carrega Dados Planilha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ENVIA MENSAGEM POS VENDAS3": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email": {
+      "main": [
+        [
+          {
+            "node": "ENVIA MENSAGEM POS VENDAS3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lembrete INSS Mensal": {
+      "main": [
+        [
+          {
+            "node": "Carrega Dados Planilha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifica SE tem INSS": {
+      "main": [
+        [
+          {
+            "node": "CLIENTE",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "NoOp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update ENVIADO SIM": {
+      "main": [
+        [
+          {
+            "node": "NoOp1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2022-08-13T17:27:03.753Z",
+  "updatedAt": "2022-08-22T20:24:23.363Z",
+  "settings": {
+    "timezone": "America/Cuiaba"
+  },
+  "staticData": null,
+  "pinData": {},
+  "tags": []
+}
